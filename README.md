@@ -53,10 +53,11 @@ Contributions are welcome! If you have any suggestions, improvements, or feature
 
 This project is licensed under the MIT License.
 
-Contact
+# Contact
+
 For any inquiries or support, please contact the developer at
-[ShivamSheokand](https://shivamsheokand.github.io/index.html)
-[shivamsheokand](https://github.com/shivamsheokand)
+[ShivamSheokand](https://shivamsheokand.github.io/index.html). <br>
+[Git Profile](https://github.com/shivamsheokand)
 
 ## Note
 
