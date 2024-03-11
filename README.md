@@ -55,7 +55,7 @@ This project is licensed under the MIT License.
 
 Contact
 For any inquiries or support, please contact the developer at
-[Link Text](https://shivamsheokand.github.io/index.html)
+[ShivamSheokand](https://shivamsheokand.github.io/index.html)
 [shivamsheokand](https://github.com/shivamsheokand)
 
 ## Note
