@@ -58,29 +58,21 @@ def run(playwright: Playwright, session) -> None:
     context.close()
     browser.close()
 
-# Start the script
-with sync_playwright() as playwright:
-    file_path = Path().cwd() / 'files' / "accounts"
-    all_sessions = [x.name for x in file_path.iterdir()]
-
-    for session_ in all_sessions:
-        session_ = str(Path().cwd() / "files" / "accounts" / session_)
-        if 'init' in session_:
-            continue
-        session = pickle.load(open(session_, "rb"))
-        run(playwright, session)
-
-def multiple_reports(playwright: Playwright, session, num_reports: int):
-    interval_time = 60  # Interval of 1 minute
-    for _ in range(num_reports):
+# Function to schedule reports at specified times
+def schedule_reports(playwright: Playwright, session, report_times: list):
+    for minute in report_times:
+        current_time = time.localtime()
+        target_time = time.struct_time((current_time.tm_year, current_time.tm_mon, current_time.tm_mday, current_time.tm_hour, minute, 0, current_time.tm_wday, current_time.tm_yday, current_time.tm_isdst))
+        while time.mktime(current_time) < time.mktime(target_time):
+            time.sleep(60)
+            current_time = time.localtime()
         try:
             run(playwright, session)
         except Exception as e:
             print(f"An error occurred: {e}")
-        time.sleep(interval_time)
 
-# Start the script for multiple reports
-with sync_playwright() as playwright:
+# Start the script
+def start_script(playwright: Playwright):
     file_path = Path().cwd() / 'files' / "accounts"
     all_sessions = [x.name for x in file_path.iterdir()]
 
@@ -89,11 +81,23 @@ with sync_playwright() as playwright:
         if 'init' in session_:
             continue
         session = pickle.load(open(session_, "rb"))
+        report_times = []
         while True:
-            num_reports = input("Enter the number of times to report: ")
-            if num_reports.isdigit():
-                num_reports = int(num_reports)
+            try:
+                num_reports = int(input("Enter the number of reports to schedule: "))
+                if num_reports <= 0:
+                    print("Invalid input. Please enter a positive integer.")
+                    continue
+                minute = int(input("Enter the minute (0-59) to schedule the report: "))
+                if not 0 <= minute <= 59:
+                    print("Invalid input. Please enter a minute between 0 and 59.")
+                    continue
+                report_times.extend([minute] * num_reports)
                 break
-            else:
-                print("Invalid input. Please enter a valid integer.")
-        multiple_reports(playwright, session, num_reports)
+            except ValueError:
+                print("Invalid input. Please enter valid integers.")
+
+        schedule_reports(playwright, session, report_times)
+
+with sync_playwright() as playwright:
+    start_script(playwright)
